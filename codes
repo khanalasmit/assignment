@@ -1,0 +1,96 @@
+class RK4:
+    def __init__(self,x,y,h):
+        #self.iterations=iterations
+        self.x=x
+        self.y=y
+        self.h=h
+        self.k=None
+        self.x_values=[]
+        self.y_values=[]
+    def f(self,a,b):
+        return a+b
+    def evaluate(self):
+        k1=self.h*self.f(self.x,self.y)
+        k2=self.h*self.f(self.x+h/2,self.y+k1/2)
+        k3=self.h*self.f(self.x+h/2,self.y+k2/2)
+        k4=self.h*self.f(self.x+h,self.y+k3)
+        self.k=(k1+2*k2+2*k3+k4)/6
+        return self.y+self.k
+    def calculate(self):
+        n=10
+        self.x_values.append(self.x)
+        self.y_values.append(self.y)
+        for i in range(n):
+            self.x=self.x+self.h
+            self.y=self.evaluate()
+            self.x_values.append(self.x)
+            self.y_values.append(self.y)
+        print(self.x_values,self.y_values)
+        plt.plot(self.x_values,self.y_values,color='green',marker=True)
+        plt.title('RK4 method')
+        plt.show()
+import numpy as np
+import matplotlib.pyplot as plt
+
+class NewtonRaphson:
+    def __init__(self, initial_guess, tolerance):
+        self.x0 = initial_guess
+        self.tol = tolerance
+        self.root = None
+
+    def f(self, a):
+        return a**2 - 4
+
+    def f_prime(self, a):
+        return 2 * a
+
+    def evaluate(self):
+        f_x = self.f(self.x0)
+        f_x_prime = self.f_prime(self.x0)
+        
+        while abs(f_x) > self.tol:
+            self.x0 = self.x0 - (f_x / f_x_prime)
+            f_x = self.f(self.x0)
+            f_x_prime = self.f_prime(self.x0)
+        
+        self.root = self.x0
+        print(f"Root: {self.root:.4f}")
+
+    def plot(self):
+        x = np.linspace(-5, 5, 100)
+        y = [self.f(i) for i in x]
+        
+        plt.plot(x, y, label='f(x) = x² - 4')
+        plt.scatter(self.root, self.f(self.root), color='red', zorder=5, label='Root')
+        plt.axvline(self.root, linestyle='--', alpha=0.6, color='grey')
+        plt.axhline(0, color='black', linewidth=0.5)
+        
+        plt.title('Plot of the function')
+        plt.xlabel('x')
+        plt.ylabel('f(x)')
+        plt.legend()
+        plt.grid(True)
+        plt.show()
+class Lagranges:
+    def __init__(self,x):
+        self.xvals=[5,7,11,13,17]
+        self.yvals=[110,392,1452,2868,5202]
+        self.x=x
+        self.n=len(self.xvals)
+        self.result=1
+    def evaluate(self):
+        print(self.n)
+        for  i in range(self.n):
+            term=self.yvals[i]
+            for j in range(self.n):
+                if(i!=j):
+                    term *=((self.x-self.xvals[j])/(self.xvals[i]-self.xvals[j]))
+            self.result +=term
+        print(f"For {self.x} interpolated values is {self.result:.4f}")
+    def plot(self):
+        plt.plot(self.xvals,self.yvals)
+        plt.scatter(self.x,self.evaluate(),color='green',marker='o')
+        plt.title("Lagranges interpolation of the given x values")
+        plt.xlabel('X')
+        plt.ylabel('Y')
+        plt.show()
